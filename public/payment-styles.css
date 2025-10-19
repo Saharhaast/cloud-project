@@ -1,0 +1,270 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    border-bottom: 15px solid black;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background: white;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+#logo {
+    font-family: "Tenor Sans", serif;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-left a {
+    font-family: "Tenor Sans", serif;
+    text-decoration: none;
+    color: black;
+    font-size: 13px;
+    font-weight: 500;
+    position: relative;
+}
+
+.nav-left a:hover::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 100%;
+    height: 2px;
+    background-color: black;
+}
+
+.nav-right a {
+    text-decoration: none; /* ลบเส้นใต้ */
+    color: black; /* ให้สีคงเดิม */
+    font-size: 18px; 
+    cursor: pointer;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-right input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.nav-right .icon {
+    font-size: 18px;
+    cursor: pointer;
+    color: black;
+}
+
+
+/* Responsive Navigation */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 15px;
+    }
+    .nav-left, .nav-right {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+h1 {
+    font-family: "Tenor Sans", serif;
+    font-size: 60px;
+    font-weight: 200;
+    text-align: start;
+    margin-bottom: 100px;
+    margin-left: 5px;
+}
+
+h3 {
+    font-family: "Tenor Sans", serif;
+    font-size: 15px;
+    font-weight: 200;
+    text-align: start;
+    margin-left: 275px;
+    margin-bottom: 20px;
+}
+
+.all-continue {
+
+    display: flex;
+    gap: 40px;
+    margin-bottom: 30px;
+    align-items: flex-end;
+    justify-content: flex-end;
+    margin-right: 40px;
+  
+}
+
+.span {
+    font-family: "Tenor Sans", serif;
+    font-size: 14px;
+    
+    
+}
+
+.button {
+    font-family: "Tenor Sans", serif;
+    background-color: white;
+    padding: 12px 24px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border: 1px solid #333;
+    color: #333; /* เปลี่ยนสี font เป็น #333 */
+    cursor: pointer;
+    transition: 0.3s;
+    position: relative;
+    z-index: 10;
+    text-decoration: none; /* เอาเส้นใต้ (underline) ออก */
+    display: inline-block; /* ให้ทำงานเหมือนปุ่มปกติ */
+    text-align: center;
+}
+
+.banner::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 5;
+    pointer-events: none;
+}
+
+.button:hover {
+    background-color: rgb(66, 66, 66) !important;
+    color: white !important;
+    
+}
+
+.bestseller {
+    text-align: center;
+    padding: 45px;
+}
+
+.bestseller h2 {
+    font-family: "Tenor Sans", serif;
+    font-size: 27px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.billing-form {
+    width: 60%;
+    margin: auto;
+    padding: 20px;
+    margin-top: 60px;
+   
+    
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* แบ่งครึ่งเป็น 2 คอลัมน์ */
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-family: "Tenor Sans", serif;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.form-group input {
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid black;
+    font-size: 16px;
+    outline: none;
+    font-family: "Tenor Sans", serif;
+    width: 100%;
+}
+
+.form-group input:focus {
+    border-bottom: 2px solid black;
+}
+
+/* ปรับขนาดให้ Responsive */
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr; /* เปลี่ยนเป็นแนวตั้งเมื่อหน้าจอเล็ก */
+    }
+}
+
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+    .banner-bottom {
+        height: 250px;
+    }
+}
+
+.footer {
+    font-family: "Tenor Sans", serif;
+    background-color: #ffffff;
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    border-top: 1px solid #ddd;
+    margin-top: 100px;
+}
+.footer-column {
+    flex: 1;
+    min-width: 250px;
+    margin-bottom: 20px;
+}
+.footer-column h4 {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+.footer-column p,
+.footer-column a {
+    font-size: 11px;
+    color: rgb(99, 99, 99);
+    text-decoration: none;
+    display: block;
+    margin-bottom: 8px;
+}
+.footer-column a:hover {
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #ffffff;
+    border-top: 1px solid #ddd;
+    font-size: 12px;
+}

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Élégance Navbar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tienne:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="home-styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a id="logo" href="/home">Élégance</a>
+            <a href="/filter-woman">ผู้หญิง</a>
+            <a href="/filter-man">ผู้ชาย</a>
+        </div>
+        <div class="nav-right">
+            <a class="fa-regular fa-user icon" onclick="logout(event)"></a>
+            <a class="fa-solid fa-bag-shopping icon" href="/shopping-bag"></a>
+        </div>
+    </nav>
+
+    <div class="banner">
+        <div class="banner-left">
+            <a href="/filter-woman" class="button">สำหรับผู้หญิง</a>
+        </div>
+        <div class="text-center">
+            <p>Collection</p>
+            <h2>TELL ME MORE</h2>
+        </div>
+        <div class="banner-right">
+            <a href="/filter-man" class="button">สำหรับผู้ชาย</a>
+        </div>
+    </div>
+
+    <!-- Bestseller Section -->
+    <section class="bestseller">
+        <h2>BESTSELLERS</h2>
+        <div class="product-grid" id="productGrid">
+            <% products.forEach(product => { %>
+                <div class="product-card">
+                    <div class="product-icons">
+                        <div class="cart-icon-container" onclick="addToCart(<%= product.product_id %>)">
+                            <i class="fa-solid fa-bag-shopping cart-icon"></i>
+                        </div>
+                    </div>
+                    <img src="<%= product.image_url %>" alt="<%= product.name %>" 
+                         class="product-img" data-id="<%= product.product_id %>">
+                    <p><%= product.name %></p>
+                    <span>$ <%= product.price %></span>
+                </div>
+            <% }) %>
+        </div>
+    </section>
+
+    <!-- Banner Section ด้านล่าง Bestseller -->
+    <section class="banner-bottom">
+        <div class="banner-content">
+            <p>NEW IN</p>
+            <h2>STUDIO COLLECTION</h2>
+        </div>
+    </section>
+
+    <!-- Studio Collection (สำหรับผู้ชาย) -->
+    <section class="Studio">
+        <div class="product-grid">
+            <% studioProducts.forEach(product => { %>
+                <div class="product-card">
+                    <div class="product-icons">
+                        <div class="cart-icon-container" onclick="addToCart(<%= product.product_id %>)">
+                            <i class="fa-solid fa-bag-shopping cart-icon"></i>
+                        </div>
+                    </div>
+                    <img src="<%= product.image_url || '/default-image.jpg' %>" 
+                         alt="<%= product.name %>" class="product-img" data-id="<%= product.product_id %>">
+                    <p><%= product.name %></p>
+                    <span>$ <%= product.price %></span>
+                </div>
+            <% }) %>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-column">
+            <h4>เกี่ยวกับเรา</h4>
+            <p >อาชีพ</p>
+            <p >คำถามที่พบบ่อย</p>
+            <p >การคืนสินค้า / การเปลี่ยนสินค้า</p>
+            <p >ติดต่อเรา</p>
+            <p >นโยบายความเป็นส่วนตัว</p>
+            <p >ซื้อของได้เร็วขึ้นด้วยแอป</p>
+        </div>
+
+        <div class="footer-column">
+            <h4>สมัครและรับส่วนลด</h4>
+            <p>สมัครสมาชิกเพื่อรับข้อเสนอพิเศษ ของรางวัลฟรี</p>
+    
+        </div>
+
+        <div class="footer-column">
+            <h4>ที่ตั้งร้านค้า</h4>
+            <p><strong>LAHORE</strong></p>
+            <p>22-A, Block K Gulberg-II Lahore, ปากีสถาน</p>
+            <p><strong>EMPORIUM MALL</strong></p>
+            <p>T01, Level 3</p>
+            <p><strong>ISLAMABAD</strong></p>
+            <p>Sumbal Rd, F-10 Markaz F10/4 Islamabad</p>
+            <p><strong>KARACHI</strong></p>
+            <p>LAMA at the mezzanine - Allure Beauty, Dolmen Mall Clifton</p>
+        </div>
+    </footer>
+
+    <div class="footer-bottom">
+        © 2024 Élégance
+    </div>
+
+    <script>
+        // ✅ customer_id มาจาก server (ไม่ต้อง query จาก URL)
+        const CUSTOMER_ID = "<%= customer_id %>";
+
+        function addToCart(product_id) {
+            if (!CUSTOMER_ID) {
+                alert("กรุณาเข้าสู่ระบบก่อนเพิ่มสินค้าในตะกร้า");
+                return;
+            }
+
+            fetch(`/get-cart?customer_id=${CUSTOMER_ID}`)
+                .then(response => response.json())
+                .then(cartItems => {
+                    const existingItem = cartItems.find(item => item.product_id == product_id);
+                    if (existingItem) {
+                        updateCart(product_id, existingItem.quantity + 1);
+                    } else {
+                        fetch("/add-to-cart", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                customer_id: CUSTOMER_ID,
+                                product_id: product_id,
+                                quantity: 1
+                            })
+                        })
+                        .then(() => alert("Added to cart"));
+                    }
+                });
+        }
+
+        function updateCart(product_id, newQuantity) {
+            fetch("/update-cart", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    customer_id: CUSTOMER_ID,
+                    product_id: product_id,
+                    quantity: newQuantity
+                })
+            }).then(() => alert("Updated cart"));
+        }
+
+        function logout(event) {
+            event.preventDefault();
+            if (confirm("คุณต้องการออกจากระบบหรือไม่ ?")) {
+                window.location.href = "/signout";
+            }
+        }
+
+        // ✅ กดที่รูปไปหน้า detail
+        document.addEventListener("click", function (event) {
+            if (event.target.classList.contains("product-img")) {
+                const productId = event.target.dataset.id;
+                window.location.href = `/detail?product_id=${productId}`;
+            }
+        });
+    </script>
+</body>
+</html>

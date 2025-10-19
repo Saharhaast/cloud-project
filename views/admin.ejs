@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tienne:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/admin-styles.css"> 
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <p id="logo">ADMIN</p>
+            <a href="/admin">สินค้า</a>
+        </div>
+        <div class="nav-right">
+            <a class="fa-regular fa-user icon" onclick="logout(event)"></a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h2>สินค้า</h2>
+            <div class="actions">
+                <button class="create" onclick="goToCreateProduct()">+ เพิ่มสินค้า</button>
+            </div>
+        </div>
+        <div class="filters">
+            <select id="gender-filter">
+                <option value="" selected>ทั้งหมด</option>
+                <option value="1">ผู้หญิง</option>
+                <option value="2">ผู้ชาย</option>
+            </select>
+        </div>
+
+        <div class="product-grid" id="product-grid"></div>
+        <div class="pagination">
+            <button id="prev-page" disabled>&lt;</button>
+            <span id="page-info">1</span>
+            <button id="next-page">&gt;</button>
+        </div>
+    </div>
+    <script>
+        let currentPage = 1;
+        const itemsPerPage = 12;
+        let allProducts = [];
+
+        function fetchProducts() {
+            const gender = document.getElementById("gender-filter").value;
+            // 1. แก้ไข URL ให้ตรงกับ API ใหม่
+            fetch(`/admin/products?gender=${gender}`)
+                .then(response => {
+                    if (!response.ok) {
+                        // ถ้า Server ตอบกลับมาเป็น Error (เช่น 401 Unauthorized, 403 Forbidden)
+                        if (response.status === 401 || response.status === 403) {
+                             // Redirect ไปหน้า login เพราะ Token อาจจะหมดอายุ
+                            window.location.href = '/signin';
+                        }
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(products => {
+                    allProducts = products;
+                    currentPage = 1; 
+                    renderProducts();
+                })
+                .catch(error => {
+                    console.error("Error fetching products:", error);
+                    // อาจจะแสดงข้อความบางอย่างบนหน้าจอว่าโหลดข้อมูลล้มเหลว
+                    document.getElementById("product-grid").innerHTML = "<p>ไม่สามารถโหลดข้อมูลสินค้าได้</p>";
+                });
+        }
+
+        function renderProducts() {
+            const productGrid = document.getElementById("product-grid");
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const paginatedItems = allProducts.slice(start, end);
+
+            // ใช้ .map().join('') เพื่อประสิทธิภาพที่ดีกว่า
+            const productsHtml = paginatedItems.map(product => `
+                <div class="product-card">
+                    <img src="${product.image_url}" onerror="this.onerror=null; this.src='/images/default.png';" class="product-img">
+                    <p>${product.name}</p>
+                    <span class="price">$${product.price}</span>
+                    <div class="buttons">
+                        <button class="edit" onclick="goToEditProduct(${product.product_id})">แก้ไข</button>
+                        <button class="delete" onclick="deleteProduct(${product.product_id})">ลบ</button>
+                    </div>
+                </div>
+            `).join('');
+
+            productGrid.innerHTML = productsHtml;
+            updatePagination();
+        }
+
+        function deleteProduct(productId) {
+            if (!confirm("คุณแน่ใจมั้ยที่ต้องการจะลบสินค้าชิ้นนี้?")) {
+                return;
+            }
+
+            // 2. แก้ไข Method และ URL การลบให้ตรงกับ API ใหม่
+            fetch(`/admin/products/${productId}`, {
+                method: "DELETE"
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("ลบสินค้าสำเร็จ!");
+                    fetchProducts(); 
+                } else {
+                    alert("ลบสินค้าล้มเหลว: " + data.message);
+                }
+            })
+            .catch(error => console.error("เกิดข้อผิดพลาดในการลบสินค้า:", error));
+        }
+
+        function updatePagination() {
+            document.getElementById("page-info").innerText = currentPage;
+            document.getElementById("prev-page").disabled = currentPage === 1;
+            const totalPages = Math.ceil(allProducts.length / itemsPerPage);
+            document.getElementById("next-page").disabled = currentPage >= totalPages;
+        }
+
+        // --- ส่วน Event Listeners เหมือนเดิม แต่จัดระเบียบเล็กน้อย ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById("prev-page").addEventListener("click", () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderProducts();
+                }
+            });
+
+            document.getElementById("next-page").addEventListener("click", () => {
+                const totalPages = Math.ceil(allProducts.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderProducts();
+                }
+            });
+            
+            document.getElementById("gender-filter").addEventListener("change", fetchProducts);
+
+            // เริ่มดึงข้อมูลสินค้าเมื่อหน้าเว็บโหลดเสร็จ
+            fetchProducts();
+        });
+
+        // --- ฟังก์ชันอื่นๆ เหมือนเดิม ---
+        function logout(event) {
+            event.preventDefault();
+            const confirmLogout = confirm("คุณต้องการออกจากระบบหรือไม่ ?");
+            if (confirmLogout) {
+                // แนะนำให้มี API สำหรับ Logout
+                fetch('/auth/logout', { method: 'POST' })
+                    .finally(() => {
+                        window.location.href = "/signout";
+                    });
+            }
+        }
+
+        function goToCreateProduct() {
+            // เราอาจจะยังไม่มี Route นี้ แต่เตรียมไว้ก่อน
+             window.location.href = '/admin/products/new'; 
+        }
+
+        function goToEditProduct(productId) {
+            // ลิงก์ไปยัง Route ที่เราสร้างไว้ใน routes/admin.js
+            window.location.href = `/admin/products/${productId}/edit`;
+        }
+    </script>
+</body>
+</html>

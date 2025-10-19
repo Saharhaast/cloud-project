@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Product</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tienne:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/edit.css"> 
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <p id="logo">ADMIN</p>
+            <a href="/admin">สินค้า</a>
+        </div>
+        <div class="nav-right">
+            <a class="fa-regular fa-user icon" onclick="logout(event)"></a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Create Product</h2>
+        <form id="productForm">
+            <label for="productName">ชื่อสินค้า</label>
+            <input type="text" id="productName" name="name" placeholder="ใส่ชื่อสินค้า" required>
+
+            <label for="price">ราคาสินค้า</label>
+            <input type="number" id="price" name="price" placeholder="ใส่ราคาสินค้า" required>
+
+            <label for="description">คำอธิบายสินค้า</label>
+            <textarea id="description" name="description" placeholder="ใส่คำอธิบายสินค้า"></textarea>
+
+            <label for="category">หมวดหมู่</label>
+            <select id="category" name="category_id">
+                <option value="1">เสื้อยืด</option>
+                <option value="2">แจ็กเกต</option>
+                <option value="3">เสื้อโค้ท</option>
+                <option value="4">กางเกงขายาว</option>
+                <option value="5">กางเกงยีน</option>
+            </select>
+
+            <label for="color">สี</label>
+            <select id="color" name="color">
+                <option value="Black">สีดำ</option>
+                <option value="White">สีขาว</option>
+                <option value="Brown">สีน้ำตาล</option>
+                <option value="Grey">สีเทา</option>
+            </select>
+
+            <label for="gender">เพศ</label>
+            <select id="gender" name="gender">
+                <option value="2">ผู้ชาย</option>
+                <option value="1">ผู้หญิง</option>
+            </select>
+
+            <label for="imageFile">รูปภาพ</label>
+            <input type="file" id="imageFile" name="image" required>
+
+            <button type="submit">เพิ่มสินค้า</button>
+        </form>
+    </div>
+
+    
+    <script>
+        // LOGOUT FUNCTION (เหมือนเดิม)
+        function logout(event) {
+            event.preventDefault();
+            const confirmLogout = confirm("คุณต้องการออกจากระบบหรือไม่ ?");
+            if (confirmLogout) {
+                // แนะนำให้มี API สำหรับ Logout
+                fetch('/auth/logout', { method: 'POST' })
+                    .finally(() => {
+                        window.location.href = "/signout";
+                    });
+            }
+        }
+
+        document.getElementById("productForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    const form = event.target;
+    
+    // [เพิ่ม] 1. ดึงปุ่ม Submit มาเก็บในตัวแปร
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    const formData = new FormData(form);
+    const imageFile = formData.get('image');
+    if (!imageFile || imageFile.size === 0) {
+        alert("กรุณาเลือกไฟล์รูปภาพ");
+        return;
+    }
+    
+    const categorySelect = document.getElementById("category");
+    const categoryName = categorySelect.options[categorySelect.selectedIndex].text;
+    formData.append('categories', categoryName);
+
+    try {
+        // [เพิ่ม] 2. ปิดการใช้งานปุ่ม และเปลี่ยนข้อความเพื่อบอกผู้ใช้ว่ากำลังทำงาน
+        submitButton.disabled = true;
+        submitButton.textContent = 'กำลังบันทึก...';
+
+        const response = await fetch("/admin/products", {
+            method: "POST",
+            body: formData,
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert("เพิ่มสินค้าสำเร็จ!");
+            window.location.href = "/admin";
+        } else {
+            alert("เพิ่มสินค้าล้มเหลว: " + result.message);
+        }
+
+    } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการส่งข้อมูล:", error);
+        alert("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
+    } finally {
+        // [เพิ่ม] 3. เปิดการใช้งานปุ่มอีกครั้ง ไม่ว่าการทำงานจะสำเร็จหรือล้มเหลว
+        submitButton.disabled = false;
+        submitButton.textContent = 'เพิ่มสินค้า';
+    }
+});
+    </script>
+</body>
+</html>

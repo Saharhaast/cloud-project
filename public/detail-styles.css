@@ -1,0 +1,445 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Tenor Sans", serif;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    border-bottom: 15px solid black;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background: white;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+#logo {
+    font-family: "Tenor Sans", serif;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-left a {
+    font-family: "Tenor Sans", serif;
+    text-decoration: none;
+    color: black;
+    font-size: 13px;
+    font-weight: 500;
+    position: relative;
+}
+
+.nav-left a:hover::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 100%;
+    height: 2px;
+    background-color: black;
+}
+
+.nav-right a {
+    text-decoration: none; /* ลบเส้นใต้ */
+    color: black; /* ให้สีคงเดิม */
+    font-size: 18px; 
+    cursor: pointer;
+}
+
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-right input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.nav-right .icon {
+    font-size: 18px;
+    cursor: pointer;
+    color: black;
+}
+
+/* Responsive Navigation */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 15px;
+    }
+    .nav-left, .nav-right {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+    .banner-bottom {
+        height: 250px;
+    }
+}
+
+.footer {
+    font-family: "Tenor Sans", serif;
+    background-color: #ffffff;
+    padding: 20px 60px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    border-top: 1px solid #ddd;
+}
+.footer-column {
+    flex: 1;
+    min-width: 250px;
+    margin-bottom: 20px;
+}
+.footer-column h4 {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+.footer-column p,
+.footer-column a {
+    font-size: 11px;
+    color: rgb(99, 99, 99);
+    text-decoration: none;
+    display: block;
+    margin-bottom: 8px;
+}
+.footer-column a:hover {
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #ffffff;
+    border-top: 1px solid #ddd;
+    font-size: 12px;
+}
+
+
+/* Main Container */
+.product-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 50px auto;
+    gap: 50px;
+}
+
+/* Left: Image Section */
+.product-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.product-image img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Right: Product Details */
+.product-details {
+    flex: 1;
+    padding: 20px;
+
+}
+
+.product-title {
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+    margin-top: 20px;
+}
+
+.product-price {
+    font-size: 20px;
+    margin: 10px 0;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.product-description {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background: #ddd;
+    margin: 20px 0;
+    margin-bottom: 30px;
+}
+
+/* Size Options */
+.section-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.size-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.size-btn {
+    background-color: white; /* พื้นหลังเริ่มต้น */
+    color: black;
+    border: 1px solid black;
+    width: 45px;
+    height: 40px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+}
+
+.size-btn.selected {
+    background-color: black; /* เปลี่ยนพื้นหลังเป็นสีดำเมื่อถูกเลือก */
+    color: white;
+}
+
+
+
+/* Hover effect */
+.size-btn:hover {
+    background: #ddd;
+}
+
+.size-btn.selected:hover {
+    background: black;
+}
+
+
+
+
+/* Custom Input */
+.custom-input {
+    width: 100%;
+    height: 90px;
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    margin-bottom: 30px;
+    resize: none;
+}
+
+/* Buttons */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+
+.btn {
+    padding: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.add-to-cart {
+    background: black;
+    color: white;
+}
+
+.add-to-cart:hover {
+    background-color: #fff;
+    background: white;
+    border: 1px solid black;
+    color: #000000;
+}
+
+
+.buy-now {
+    background: black;
+    color: white;
+}
+
+.buy-now:hover {
+    background-color: #fff;
+    background: white;
+    border: 1px solid black;
+    color: #000000;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .product-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .product-image img {
+        max-width: 100%;
+    }
+
+    .product-details {
+        text-align: center;
+    }
+
+    .size-options {
+        justify-content: center;
+    }
+}
+
+.bestseller {
+    text-align: center;
+    padding: 50px ;
+}
+
+.bestseller h2 {
+    font-family: "Tenor Sans", serif;
+    font-size: 27px;
+    font-weight: 700;
+    margin-bottom: 60px;
+    margin-top: 10px;
+}
+
+.product-grid {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+
+.product-card {
+    outline: none !important;
+    border: none !important;
+    text-decoration: none !important;
+    box-shadow: none !important;
+}
+
+.product-card {
+    position: relative;
+    text-align: center;
+    background-color: transparent;
+    overflow: hidden; /* ป้องกันไอคอนล้นออกไป */
+}
+
+.fav-icon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+    color: black;
+    cursor: pointer;
+    transition: 0.3s;
+    z-index: 10; 
+}
+
+.fav-icon:hover {
+    color: red;
+}
+
+/* ถุงช้อปปิ้ง */
+.cart-icon-container {
+    position: absolute;
+    bottom: 87.5px;
+    right: 0px;
+    background: black;
+    padding: 15px;
+    z-index: 10; 
+}
+
+.cart-icon {
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+}
+
+.cart-icon-container:hover {
+    background: white; 
+    transition: 0.3s;
+}
+
+.cart-icon-container:hover .cart-icon {
+    color: black; 
+    transition: 0.3s;
+}
+
+.product-card img {
+    width: 300px;
+    height: 400px;
+    object-fit: cover;
+}
+
+.product-card p {
+    margin-top: 10px;
+    font-family: "Tenor Sans", serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444444;
+    margin-bottom: 15px;
+    min-height: 40px;
+}
+
+.product-card span {
+    font-family: "Tenor Sans", serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+    
+}
+
+* Product Section */
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.product-card {
+    text-align: center;
+    background-color: transparent;
+    width: 300px;
+}
+
+.product-card img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Responsive Products */
+@media (max-width: 480px) {
+    .product-card {
+        width: 90%;
+    }
+}

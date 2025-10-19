@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Bag</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tienne:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shopping-styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a id="logo" href="/home">Élégance</a>
+            <a href="/filter-woman">ผู้หญิง</a>
+            <a href="/filter-man">ผู้ชาย</a>
+        </div>
+        <div class="nav-right">
+            <a class="fa-regular fa-user icon" onclick="logout(event)"></a>
+            <a class="fa-solid fa-bag-shopping icon" href="/shopping-bag"></a>
+        </div>
+    </nav>
+
+  
+
+
+    <section class="bestseller">
+        
+        <h1>Élégance</h1>
+        <h3>ถุงช้อปปิ้ง</h3>
+
+        <div class="product-grid">
+
+        </div>
+
+        
+
+    </section>
+
+    <div class="all-continue">
+
+        <div class="total-price">
+             <span id="total" class="span">ราคารวม : 3390</span>
+        </div>
+        
+        <form id="paymentForm" action="/payment" method="POST">
+            <input type="hidden" name="customer_id" value="<%= customer_id %>">
+            <button type="submit" class="button">ชำระเงิน</button>
+        </form>
+
+
+    </div>
+
+    <footer class="footer">
+        <div class="footer-column">
+            <h4>เกี่ยวกับเรา</h4>
+            <p >อาชีพ</p>
+            <p >คำถามที่พบบ่อย</p>
+            <p >การคืนสินค้า / การเปลี่ยนสินค้า</p>
+            <p >ติดต่อเรา</p>
+            <p >นโยบายความเป็นส่วนตัว</p>
+            <p >ซื้อของได้เร็วขึ้นด้วยแอป</p>
+        </div>
+
+        <div class="footer-column">
+            <h4>สมัครและรับส่วนลด</h4>
+            <p>สมัครสมาชิกเพื่อรับข้อเสนอพิเศษ ของรางวัลฟรี</p>
+    
+        </div>
+
+        <div class="footer-column">
+            <h4>ที่ตั้งร้านค้า</h4>
+            <p><strong>LAHORE</strong></p>
+            <p>22-A, Block K Gulberg-II Lahore, ปากีสถาน</p>
+            <p><strong>EMPORIUM MALL</strong></p>
+            <p>T01, Level 3</p>
+            <p><strong>ISLAMABAD</strong></p>
+            <p>Sumbal Rd, F-10 Markaz F10/4 Islamabad</p>
+            <p><strong>KARACHI</strong></p>
+            <p>LAMA at the mezzanine - Allure Beauty, Dolmen Mall Clifton</p>
+        </div>
+    </footer>
+
+    <div class="footer-bottom">
+        © 2024 Élégance
+    </div>
+   
+    
+  
+
+<script>
+ 
+document.addEventListener("DOMContentLoaded", function () {
+    const cartItems = <%- JSON.stringify(cartItems) %>;
+    const productGrid = document.querySelector(".product-grid");
+    const totalElement = document.getElementById("total");
+    const customerId = "<%= customer_id %>";
+
+    function renderCart() {
+        productGrid.innerHTML = "";
+        cartItems.forEach(item => {
+            const productHTML = `
+                <div class="product-card" data-id="${item.product_id}">
+                    <img src="${item.image_url}" alt="${item.name}">
+                    <p>${item.name}</p>
+                    <span class="price" data-price="${item.price}">$ ${item.price}</span>
+                    <div class="quantity-control">
+                        <button class="decrease">-</button>
+                        <span class="quantity">${item.quantity}</span>
+                        <button class="increase">+</button>
+                    </div>
+                </div>
+            `;
+            productGrid.innerHTML += productHTML;
+        });
+
+        attachEventListeners();
+        updateTotal();
+    }
+
+    function updateTotal() {
+        let total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        totalElement.textContent = `ราคารวม : $ ${total}`;
+    }
+
+    function attachEventListeners() {
+        document.querySelectorAll(".product-card").forEach(card => {
+            const id = parseInt(card.dataset.id);
+            const decreaseBtn = card.querySelector(".decrease");
+            const increaseBtn = card.querySelector(".increase");
+            const quantityElement = card.querySelector(".quantity");
+
+            decreaseBtn.addEventListener("click", function () {
+                let item = cartItems.find(p => p.product_id === id);
+                if (item.quantity > 1) {
+                    item.quantity--;
+                    quantityElement.textContent = item.quantity;
+
+                    // อัปเดตฐานข้อมูล
+                    updateCartInDB(id, item.quantity);
+                } else {
+                    if (confirm("คุณต้องการนำสินค้านี้ออกจากถุงช้อปปิ้งหรือไม่?")) {
+                        removeItemFromCart(id);
+                    }
+                }
+                updateTotal();
+            });
+
+            increaseBtn.addEventListener("click", function () {
+                let item = cartItems.find(p => p.product_id === id);
+                item.quantity++;
+                quantityElement.textContent = item.quantity;
+
+                // อัปเดตฐานข้อมูล
+                updateCartInDB(id, item.quantity);
+
+                updateTotal();
+            });
+        });
+    }
+
+    function updateCartInDB(productId, quantity) {
+        fetch("/update-cart", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                customer_id: customerId,
+                product_id: productId,
+                quantity: quantity
+            })
+        }).then(res => res.text())
+          .then(data => console.log("Cart updated:", data))
+          .catch(err => console.error(err));
+    }
+
+    function removeItemFromCart(productId) {
+        fetch("/remove-item", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ customer_id: customerId, product_id: productId })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const index = cartItems.findIndex(p => p.product_id === productId);
+                if (index > -1) cartItems.splice(index, 1);
+                renderCart();
+            } else {
+                alert("เกิดข้อผิดพลาดในการลบสินค้า");
+            }
+        }).catch(err => console.error(err));
+    }
+
+    renderCart();
+});
+
+
+    //LOGOUT
+    function logout(event) {
+        event.preventDefault(); // ป้องกันเปลี่ยนหน้าอัตโนมัติ
+        const confirmLogout = confirm("คุณต้องการออกจากระบบหรือไม่ ?");
+        if (confirmLogout) {
+            window.location.href = "/signout"; // ไปที่หน้า Sign In
+        }
+    }
+    const CUSTOMER_ID = "<%= customer_id %>";
+    function goToPayment() {
+        window.location.href = `/payment?customer_id=${CUSTOMER_ID}`;
+        }
+
+
+</script>
+</body>
+</html>

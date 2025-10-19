@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAN</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tienne:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a id="logo" href="/home">Élégance</a>
+            <a href="/filter-woman">ผู้หญิง</a>
+            <a href="/filter-man">ผู้ชาย</a>
+        </div>
+        <div class="nav-right">
+            <a class="fa-regular fa-user icon" onclick="logout(event)"></a>
+            <a class="fa-solid fa-bag-shopping icon" href="/shopping-bag"></a>
+        </div>
+    </nav>
+
+
+    <!-- ฟอร์มเลือก Category, Color และ Price -->
+    <div class="container">
+        <form class="filter-section" action="/filter-man" method="POST">
+            <input type="hidden" name="customer_id" value="<%= customer_id %>">
+    
+            <h3>หมวดหมู่</h3>
+            <ul>
+            <li>
+                <input type="radio" name="category" value="1"> เสื้อยืด
+            </li>
+
+            <li>
+                <input type="radio" name="category" value="2"> แจ็กเกต
+            </li>
+            
+            <li>
+                <input type="radio" name="category" value="3"> เสื้อโค้ท
+            </li>
+
+            <li>
+                <input type="radio" name="category" value="4"> กางเกงขายาว
+            </li>
+
+            <li>
+                <input type="radio" name="category" value="5"> กางเกงยีน
+            </li>
+
+            <li>
+                <input type="radio" name="category" value=""> หมวดหมู่ทั้งหมด
+            </li>
+        </ul>
+    
+        <hr>
+            <h3>สี</h3>
+            <ul>
+            <li>
+                <input type="radio" name="color" value="Black"> สีดำ
+            </li>
+
+            <li>
+                <input type="radio" name="color" value="White"> สีขาว
+            </li>
+
+            <li>
+                <input type="radio" name="color" value="Brown"> สีน้ำตาล
+            </li>
+
+            <li>
+                <input type="radio" name="color" value="Grey"> สีเทา
+            </li>
+
+            <li>
+                <input type="radio" name="color" value=""> สีทั้งหมด
+            </li>
+        </ul>
+    
+        <hr>
+            <h3>ราคา</h3>
+            <ul>
+            <li>
+                <input type="radio" name="price" value="1"> $ 0 - 1000 
+            </li>
+            <li>
+                <input type="radio" name="price" value="2"> $ 1000 - 5000 
+            </li>
+            <li>
+                <input type="radio" name="price" value="3"> $ 5000 - 10000 
+            </li>
+            <li>
+                <input type="radio" name="price" value=""> ราคาทั้งหมด
+            </li>
+        </ul>
+        <hr>
+    
+        <button type="submit" class="buttonFilter">ใช้ตัวกรอง</button>
+    </form>
+        
+        <section class="bestseller">
+            <div class="p">
+                <p>พบสินค้าจำนวน</p>
+                <p id = "item-number">15</p> 
+                <p>รายการ</p>
+            </div>
+            
+            <!-- สินค้า -->
+            <div id="product-grid" class="product-grid">
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button id="prev-page">&lt;</button>
+                <span id="page-num">1</span>
+                <button id="next-page">&gt;</button>
+            </div>
+        </section>
+
+    </div>
+
+    <!------------------------------------------------------------------------------------------------------>
+    <footer class="footer">
+        <div class="footer-column">
+            <h4>เกี่ยวกับเรา</h4>
+            <p >อาชีพ</p>
+            <p >คำถามที่พบบ่อย</p>
+            <p >การคืนสินค้า / การเปลี่ยนสินค้า</p>
+            <p >ติดต่อเรา</p>
+            <p >นโยบายความเป็นส่วนตัว</p>
+            <p >ซื้อของได้เร็วขึ้นด้วยแอป</p>
+        </div>
+
+        <div class="footer-column">
+            <h4>สมัครและรับส่วนลด</h4>
+            <p>สมัครสมาชิกเพื่อรับข้อเสนอพิเศษ ของรางวัลฟรี</p>
+    
+        </div>
+
+        <div class="footer-column">
+            <h4>ที่ตั้งร้านค้า</h4>
+            <p><strong>LAHORE</strong></p>
+            <p>22-A, Block K Gulberg-II Lahore, ปากีสถาน</p>
+            <p><strong>EMPORIUM MALL</strong></p>
+            <p>T01, Level 3</p>
+            <p><strong>ISLAMABAD</strong></p>
+            <p>Sumbal Rd, F-10 Markaz F10/4 Islamabad</p>
+            <p><strong>KARACHI</strong></p>
+            <p>LAMA at the mezzanine - Allure Beauty, Dolmen Mall Clifton</p>
+        </div>
+    </footer>
+
+    <div class="footer-bottom">
+        © 2024 Élégance
+    </div>
+    <!------------------------------------------------------------------------------------------------------>
+
+
+<script>
+    const products = <%- JSON.stringify(products) %>;
+    const urlParams = new URLSearchParams(window.location.search);
+    const customerId = urlParams.get('customer_id');
+    const itemsPerPage = 9;
+    let currentPage = 1;
+
+    function displayProducts() {
+        const productGrid = document.getElementById("product-grid");
+        productGrid.innerHTML = "";
+
+        const uniqueProducts = Array.from(new Map(products.map(p => [p.product_id, p])).values());
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedProducts = uniqueProducts.slice(startIndex, endIndex);
+
+        paginatedProducts.forEach(product => {
+            const productHTML = `
+                <div class="product-card">
+                    <div class="product-icons">
+                        <div class="cart-icon-container" onclick="addToCart(${product.product_id})">
+                            <i class="fa-solid fa-bag-shopping cart-icon"></i>
+                        </div>
+                    </div>
+                    <img src="${product.image_url}" alt="${product.name}" class="product-image" data-id="${product.product_id}">
+                    <p>${product.name}</p>
+                    <span>$ ${product.price}</span>
+                </div>
+            `;
+            productGrid.insertAdjacentHTML('beforeend', productHTML);
+        });
+
+        document.getElementById("page-num").textContent = currentPage;
+        const totalPages = Math.ceil(uniqueProducts.length / itemsPerPage);
+        document.getElementById("prev-page").disabled = currentPage === 1;
+        document.getElementById("next-page").disabled = currentPage === totalPages;
+        document.getElementById("item-number").textContent = uniqueProducts.length;
+    }
+
+    document.getElementById("prev-page").addEventListener("click", () => {
+        if (currentPage > 1) { currentPage--; displayProducts(); }
+    });
+
+    document.getElementById("next-page").addEventListener("click", () => {
+        const totalPages = Math.ceil(products.length / itemsPerPage);
+        if (currentPage < totalPages) { currentPage++; displayProducts(); }
+    });
+
+    document.body.addEventListener("click", function(event) {
+        if (event.target.classList.contains("product-image")) {
+            const productId = event.target.dataset.id;
+            window.location.href = `/detail?product_id=${productId}&customer_id=${customerId}`;
+        }
+    });
+
+    function addToCart(product_id) {
+        fetch(`/get-cart?customer_id=${customerId}`)
+            .then(res => res.json())
+            .then(cartItems => {
+                const existingItem = cartItems.find(item => item.product_id == product_id);
+                if (existingItem) {
+                    updateCart(product_id, existingItem.quantity + 1);
+                } else {
+                    fetch("/add-to-cart", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ customer_id: customerId, product_id, quantity: 1 })
+                    }).then(() => alert("Added to cart"));
+                }
+            });
+    }
+
+    function updateCart(product_id, newQuantity) {
+        fetch("/update-cart", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ customer_id: customerId, product_id, quantity: newQuantity })
+        }).then(() => alert("Added to cart"));
+    }
+
+    function logout(event) {
+        event.preventDefault();
+        if (confirm("คุณต้องการออกจากระบบหรือไม่ ?")) {
+            window.location.href = "/signout";
+        }
+    }
+
+    displayProducts(); // โหลดสินค้าเริ่มต้น
+</script>
+
+   
+</body>
+
+
+
+</html>

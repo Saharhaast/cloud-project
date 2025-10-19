@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Élégance Detail</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tienne:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="detail-styles.css">
+</head>
+
+<body>
+     <nav class="navbar">
+        <div class="nav-left">
+            <a id="logo" href="/home">Élégance</a>
+            <a href="/filter-woman">ผู้หญิง</a>
+            <a href="/filter-man">ผู้ชาย</a>
+        </div>
+        <div class="nav-right">
+            <a class="fa-regular fa-user icon" onclick="logout(event)"></a>
+            <a class="fa-solid fa-bag-shopping icon" href="/shopping-bag"></a>
+        </div>
+    </nav>
+
+    <div class="product-container">
+        <!-- Left: Product Image -->
+        <div class="product-image">
+            <img src="<%= product.image_url %>" alt="<%= product.name %>">
+        </div>
+
+        <!-- Right: Product Details -->
+        <div class="product-details">
+            <h1 class="product-title">
+                <%= product.name %>
+            </h1>
+            <p class="product-price">$ <%= product.price %>
+            </p>
+            <p class="product-description">
+                <%= product.description %>
+            </p>
+            <hr>
+
+            <!-- Size Selection -->
+            <h3 class="section-title">เลือกขนาด</h3>
+            <div class="size-options">
+                <button class="size-btn">XS</button>
+                <button class="size-btn">S</button>
+                <button class="size-btn">M</button>
+                <button class="size-btn">L</button>
+                <button class="size-btn">XL</button>
+            </div>
+
+            <!-- Customization Input -->
+            <h3 class="section-title">ปรับแต่งสินค้า</h3>
+            <textarea class="custom-input" placeholder="e.g. ตัดขากางเกง, ปรับไซส์"></textarea>
+
+            <!-- Buttons -->
+            <div class="action-buttons">
+                <button class="btn add-to-cart" id="addToCart" onclick="addToCart(<%= product.product_id %>)">> เพิ่มลงในถุงช้อปปิ้ง
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <section class="bestseller">
+        <h2>สินค้าแนะนำ</h2>
+        <div class="product-grid">
+            <% recommendedProducts.forEach(product=> { %>
+                <div class="product-card">
+                    <div class="product-icons">
+                        <div class="cart-icon-container" id="addToCart" onclick="addToCart(<%= product.product_id %>)">
+                            <i class="fa-solid fa-bag-shopping cart-icon"></i>
+                        </div>
+                    </div>
+                    <img src="<%= product.image_url || '/default-image.jpg' %>" alt="<%= product.name %>"
+                        class="product-img" data-id="<%= product.product_id %>">
+                    <p>
+                        <%= product.name %>
+                    </p>
+                    <span>$ <%= product.price %></span>
+                </div>
+                <% }) %>
+        </div>
+    </section>
+
+
+
+
+    <footer class="footer">
+        <div class="footer-column">
+            <h4>เกี่ยวกับเรา</h4>
+            <p >อาชีพ</p>
+            <p >คำถามที่พบบ่อย</p>
+            <p >การคืนสินค้า / การเปลี่ยนสินค้า</p>
+            <p >ติดต่อเรา</p>
+            <p >นโยบายความเป็นส่วนตัว</p>
+            <p >ซื้อของได้เร็วขึ้นด้วยแอป</p>
+        </div>
+
+        <div class="footer-column">
+            <h4>สมัครและรับส่วนลด</h4>
+            <p>สมัครสมาชิกเพื่อรับข้อเสนอพิเศษ ของรางวัลฟรี</p>
+    
+        </div>
+
+        <div class="footer-column">
+            <h4>ที่ตั้งร้านค้า</h4>
+            <p><strong>LAHORE</strong></p>
+            <p>22-A, Block K Gulberg-II Lahore, ปากีสถาน</p>
+            <p><strong>EMPORIUM MALL</strong></p>
+            <p>T01, Level 3</p>
+            <p><strong>ISLAMABAD</strong></p>
+            <p>Sumbal Rd, F-10 Markaz F10/4 Islamabad</p>
+            <p><strong>KARACHI</strong></p>
+            <p>LAMA at the mezzanine - Allure Beauty, Dolmen Mall Clifton</p>
+        </div>
+    </footer>
+
+    <div class="footer-bottom">
+        © 2024 Élégance
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const customerId = urlParams.get('customer_id');
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // ให้คลิกที่รูปสินค้าแล้วไปยังหน้า detail
+            setTimeout(() => {
+                document.querySelectorAll(".product-img").forEach(img => {
+                    console.log("Product image loaded:", img); // ตรวจสอบว่า img โหลดมาไหม
+                    img.addEventListener("click", function () {
+                        let productId = this.getAttribute("data-id");
+                        console.log("Navigating to:", `/detail?product_id=${productId}&customer_id=${customerId}`); // Debug log
+                        window.location.href = `/detail?product_id=${productId}&customer_id=${customerId}`;
+                    });
+                });
+            }, 500); // รอให้ DOM โหลดก่อน 0.5 วินาที
+
+            // เพิ่ม event listener สำหรับ favorite icon
+            document.body.addEventListener("click", function (event) {
+                if (event.target.classList.contains("fav-icon")) {
+                    event.target.classList.toggle("fa-solid");
+                    event.target.style.color = event.target.classList.contains("fa-solid") ? "red" : "black";
+                }
+            });
+        });
+
+        // LOGOUT FUNCTION
+            
+        function logout(event) {
+            event.preventDefault();
+            const confirmLogout = confirm("คุณต้องการออกจากระบบหรือไม่ ?");
+            if (confirmLogout) {
+                window.location.href = "/signout";
+            }
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const sizeButtons = document.querySelectorAll(".size-btn");
+        
+            sizeButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    // ลบ class "selected" ออกจากปุ่มทั้งหมดก่อน
+                    sizeButtons.forEach(btn => btn.classList.remove("selected"));
+        
+                    // เพิ่ม class "selected" ให้ปุ่มที่ถูกคลิก
+                    this.classList.add("selected");
+                });
+            });
+        });
+        
+        
+
+
+    </script>
+
+
+
+    <script>
+
+
+        function addToCart(product_id) {
+            fetch(`/get-cart?customer_id=${customerId}`)
+                .then(response => response.json())
+                .then(cartItems => {
+                    const existingItem = cartItems.find(item => item.product_id == product_id);
+                    if (existingItem) {
+                        // ถ้าสินค้ามีอยู่แล้ว ให้เพิ่มจำนวน
+                        updateCart(product_id, existingItem.quantity + 1);
+                    } else {
+                        // ถ้าไม่มีสินค้าอยู่ ให้เพิ่มใหม่
+                        fetch("/add-to-cart", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                customer_id: customerId,
+                                product_id: product_id,
+                                quantity: 1
+                            })
+                        }).then(response => response.text())
+                            .then(data => alert("Added to cart"));
+                    }
+                });
+        }
+
+        function updateCart(product_id, newQuantity) {
+            fetch("/update-cart", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    customer_id: customerId,
+                    product_id: product_id,
+                    quantity: newQuantity
+                })
+            }).then(response => response.text())
+                .then(data => alert("Added to cart"));
+        }
+//=====================================================================================================================
+        document.querySelectorAll('.fav-icon').forEach(button => {
+    button.addEventListener('click', function() {
+        const productId = this.getAttribute('data-product-id');
+        const customerId = this.getAttribute('data-customer-id');
+
+        fetch('/toggle-favorite', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ customer_id: customerId, product_id: productId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // เปลี่ยนสถานะของไอคอนเมื่อกด
+                if (data.favorited) {
+                    this.classList.remove('fa-regular');
+                    this.classList.add('fa-solid');
+                } else {
+                    this.classList.remove('fa-solid');
+                    this.classList.add('fa-regular');
+                }
+            } else {
+                alert('Error occurred.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
+
+    </script>
+
+</body>
+
+</html>
